@@ -67,6 +67,7 @@ impl<T, const N: usize> Deque<T, N> {
     /// // allocate the deque in a static variable
     /// static mut X: Deque<u8, 16> = Deque::new();
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub const fn new() -> Self {
         // Const assert N > 0
         crate::sealed::greater_than_0::<N>();
@@ -112,6 +113,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Clears the deque, removing all values.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         // safety: we're immediately setting a consistent empty state.
         unsafe { self.drop_contents() }
@@ -123,6 +125,7 @@ impl<T, const N: usize> Deque<T, N> {
     /// Drop all items in the `Deque`, leaving the state `back/front/full` unmodified.
     ///
     /// safety: leaves the `Deque` in an inconsistent state, so can cause duplicate drops.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     unsafe fn drop_contents(&mut self) {
         // We drop each element used in the deque by turning into a &mut[T]
         let (a, b) = self.as_mut_slices();
@@ -131,16 +134,19 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Returns whether the deque is empty.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_empty(&self) -> bool {
         self.front == self.back && !self.full
     }
 
     /// Returns whether the deque is full (i.e. if `len() == capacity()`.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_full(&self) -> bool {
         self.full
     }
 
     /// Returns a pair of slices which contain, in order, the contents of the `Deque`.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn as_slices(&self) -> (&[T], &[T]) {
         // NOTE(unsafe) avoid bound checks in the slicing operation
         unsafe {
@@ -167,6 +173,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Returns a pair of mutable slices which contain, in order, the contents of the `Deque`.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn as_mut_slices(&mut self) -> (&mut [T], &mut [T]) {
         let ptr = self.buffer.as_mut_ptr();
 
@@ -192,6 +199,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Provides a reference to the front element, or None if the `Deque` is empty.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn front(&self) -> Option<&T> {
         if self.is_empty() {
             None
@@ -201,6 +209,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Provides a mutable reference to the front element, or None if the `Deque` is empty.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn front_mut(&mut self) -> Option<&mut T> {
         if self.is_empty() {
             None
@@ -210,6 +219,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Provides a reference to the back element, or None if the `Deque` is empty.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn back(&self) -> Option<&T> {
         if self.is_empty() {
             None
@@ -220,6 +230,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Provides a mutable reference to the back element, or None if the `Deque` is empty.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn back_mut(&mut self) -> Option<&mut T> {
         if self.is_empty() {
             None
@@ -230,6 +241,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Removes the item from the front of the deque and returns it, or `None` if it's empty
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop_front(&mut self) -> Option<T> {
         if self.is_empty() {
             None
@@ -239,6 +251,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Removes the item from the back of the deque and returns it, or `None` if it's empty
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop_back(&mut self) -> Option<T> {
         if self.is_empty() {
             None
@@ -250,6 +263,7 @@ impl<T, const N: usize> Deque<T, N> {
     /// Appends an `item` to the front of the deque
     ///
     /// Returns back the `item` if the deque is full
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push_front(&mut self, item: T) -> Result<(), T> {
         if self.is_full() {
             Err(item)
@@ -262,6 +276,7 @@ impl<T, const N: usize> Deque<T, N> {
     /// Appends an `item` to the back of the deque
     ///
     /// Returns back the `item` if the deque is full
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push_back(&mut self, item: T) -> Result<(), T> {
         if self.is_full() {
             Err(item)
@@ -336,6 +351,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Returns an iterator over the deque.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> Iter<'_, T, N> {
         let done = self.is_empty();
         Iter {
@@ -348,6 +364,7 @@ impl<T, const N: usize> Deque<T, N> {
     }
 
     /// Returns an iterator that allows modifying each value.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter_mut(&mut self) -> IterMut<'_, T, N> {
         let done = self.is_empty();
         IterMut {

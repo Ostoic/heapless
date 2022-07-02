@@ -33,6 +33,7 @@ impl<T> Stack<T> {
         }
     }
 
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push(&self, new_head: Ptr<Node<T>>) {
         // NOTE `Ordering`s come from crossbeam's (v0.6.0) `TreiberStack`
 
@@ -53,6 +54,7 @@ impl<T> Stack<T> {
         }
     }
 
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn try_pop(&self) -> Option<Ptr<Node<T>>> {
         // NOTE `Ordering`s come from crossbeam's (v0.6.0) `TreiberStack`
 

@@ -308,6 +308,7 @@ where
     /// // This will not fit in the queue.
     /// assert_eq!(ll.push(4), Err(4));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push(&mut self, value: T) -> Result<(), T> {
         if !self.is_full() {
             Ok(unsafe { self.push_unchecked(value) })
@@ -333,6 +334,7 @@ where
     /// assert_eq!(iter.next(), Some(&1));
     /// assert_eq!(iter.next(), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> Iter<'_, T, Idx, K, N> {
         Iter {
             list: self,
@@ -362,6 +364,7 @@ where
     /// assert_eq!(ll.pop(), Ok(1));
     /// assert_eq!(ll.pop(), Err(()));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn find_mut<F>(&mut self, mut f: F) -> Option<FindMut<'_, T, Idx, K, N>>
     where
         F: FnMut(&T) -> bool,
@@ -424,6 +427,7 @@ where
     /// ll_min.push(1).unwrap();
     /// assert_eq!(ll_min.peek(), Some(&1));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn peek(&self) -> Option<&T> {
         self.head
             .option()
@@ -462,6 +466,7 @@ where
     /// assert_eq!(ll.pop(), Ok(1));
     /// assert_eq!(ll.pop(), Err(()));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop(&mut self) -> Result<T, ()> {
         if !self.is_empty() {
             Ok(unsafe { self.pop_unchecked() })

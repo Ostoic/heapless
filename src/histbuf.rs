@@ -70,6 +70,7 @@ impl<T, const N: usize> HistoryBuffer<T, N> {
 
     /// Clears the buffer, replacing every element with the default value of
     /// type `T`.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         *self = Self::new();
     }
@@ -101,6 +102,7 @@ where
     }
 
     /// Clears the buffer, replacing every element with the given value.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear_with(&mut self, t: T) {
         *self = Self::new_with(t);
     }
@@ -125,6 +127,7 @@ impl<T, const N: usize> HistoryBuffer<T, N> {
     }
 
     /// Writes an element to the buffer, overwriting the oldest value.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn write(&mut self, t: T) {
         if self.filled {
             // Drop the old before we overwrite it.
@@ -143,6 +146,7 @@ impl<T, const N: usize> HistoryBuffer<T, N> {
     ///
     /// If the slice is longer than the buffer, only the last `self.len()`
     /// elements will actually be stored.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn extend_from_slice(&mut self, other: &[T])
     where
         T: Clone,
@@ -164,6 +168,7 @@ impl<T, const N: usize> HistoryBuffer<T, N> {
     /// x.write(10);
     /// assert_eq!(x.recent(), Some(&10));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn recent(&self) -> Option<&T> {
         if self.write_at == 0 {
             if self.filled {
@@ -178,6 +183,7 @@ impl<T, const N: usize> HistoryBuffer<T, N> {
 
     /// Returns the array slice backing the buffer, without keeping track
     /// of the write position. Therefore, the element order is unspecified.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn as_slice(&self) -> &[T] {
         unsafe { slice::from_raw_parts(self.data.as_ptr() as *const _, self.len()) }
     }
@@ -197,6 +203,7 @@ impl<T, const N: usize> HistoryBuffer<T, N> {
     /// }
     ///
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn oldest_ordered<'a>(&'a self) -> OldestOrdered<'a, T, N> {
         if self.filled {
             OldestOrdered {

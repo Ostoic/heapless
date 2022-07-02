@@ -124,7 +124,8 @@ macro_rules! arc_pool {
             /// Allocates a new `Arc` and writes `data` to it
             ///
             /// Returns an `Err`or if the backing memory pool is empty
-            pub fn alloc(data: $ty) -> Result<$crate::Arc<Self>, $ty>
+            #[cfg_attr(feature = "aggressive-inline", inline(always))]
+pub fn alloc(data: $ty) -> Result<$crate::Arc<Self>, $ty>
             where
                 Self: Sized,
             {
@@ -136,14 +137,16 @@ macro_rules! arc_pool {
             /// This method might *not* fully utilize the given memory block due to alignment requirements
             ///
             /// This method returns the number of *new* blocks that can be allocated.
-            pub fn grow(memory: &'static mut [u8]) -> usize {
+            #[cfg_attr(feature = "aggressive-inline", inline(always))]
+pub fn grow(memory: &'static mut [u8]) -> usize {
                 <Self as $crate::pool::singleton::arc::Pool>::ptr().grow(memory)
             }
 
             /// Increases the capacity of the pool
             ///
             /// Unlike `grow`, this method fully utilizes the given memory block
-            pub fn grow_exact<A>(memory: &'static mut MaybeUninit<A>) -> usize
+            #[cfg_attr(feature = "aggressive-inline", inline(always))]
+pub fn grow_exact<A>(memory: &'static mut MaybeUninit<A>) -> usize
             where
                 A: AsMut<[$crate::pool::Node<$crate::pool::singleton::arc::ArcInner<$ty>>]>,
             {

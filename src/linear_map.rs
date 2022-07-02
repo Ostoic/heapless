@@ -23,6 +23,7 @@ impl<K, V, const N: usize> LinearMap<K, V, N> {
     /// // allocate the map in a static variable
     /// static mut MAP: LinearMap<&str, isize, 8> = LinearMap::new();
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub const fn new() -> Self {
         Self { buffer: Vec::new() }
     }
@@ -44,6 +45,7 @@ where
     /// let map: LinearMap<&str, isize, 8> = LinearMap::new();
     /// assert_eq!(map.capacity(), 8);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn capacity(&self) -> usize {
         N
     }
@@ -62,6 +64,7 @@ where
     /// map.clear();
     /// assert!(map.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         self.buffer.clear()
     }
@@ -80,6 +83,7 @@ where
     /// assert_eq!(map.contains_key(&1), true);
     /// assert_eq!(map.contains_key(&2), false);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn contains_key(&self, key: &K) -> bool {
         self.get(key).is_some()
     }
@@ -98,6 +102,7 @@ where
     /// assert_eq!(map.get(&1), Some(&"a"));
     /// assert_eq!(map.get(&2), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn get<Q>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -124,6 +129,7 @@ where
     /// }
     /// assert_eq!(map[&1], "b");
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn get_mut<Q>(&mut self, key: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
@@ -148,6 +154,7 @@ where
     /// a.insert(1, "a").unwrap();
     /// assert_eq!(a.len(), 1);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn len(&self) -> usize {
         self.buffer.len()
     }
@@ -173,6 +180,7 @@ where
     /// assert_eq!(map.insert(37, "c").unwrap(), Some("b"));
     /// assert_eq!(map[&37], "c");
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn insert(&mut self, key: K, mut value: V) -> Result<Option<V>, (K, V)> {
         if let Some((_, v)) = self.iter_mut().find(|&(k, _)| *k == key) {
             mem::swap(v, &mut value);
@@ -197,6 +205,7 @@ where
     /// a.insert(1, "a").unwrap();
     /// assert!(!a.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -217,6 +226,7 @@ where
     ///     println!("key: {} val: {}", key, val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> Iter<'_, K, V> {
         Iter {
             iter: self.buffer.as_slice().iter(),
@@ -245,6 +255,7 @@ where
     ///     println!("key: {} val: {}", key, val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter_mut(&mut self) -> IterMut<'_, K, V> {
         IterMut {
             iter: self.buffer.as_mut_slice().iter_mut(),
@@ -267,6 +278,7 @@ where
     ///     println!("{}", key);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn keys(&self) -> impl Iterator<Item = &K> {
         self.iter().map(|(k, _)| k)
     }
@@ -286,6 +298,7 @@ where
     /// assert_eq!(map.remove(&1), Some("a"));
     /// assert_eq!(map.remove(&1), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn remove<Q>(&mut self, key: &Q) -> Option<V>
     where
         K: Borrow<Q>,
@@ -316,6 +329,7 @@ where
     ///     println!("{}", val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn values(&self) -> impl Iterator<Item = &V> {
         self.iter().map(|(_, v)| v)
     }
@@ -340,6 +354,7 @@ where
     ///     println!("{}", val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn values_mut(&mut self) -> impl Iterator<Item = &mut V> {
         self.iter_mut().map(|(_, v)| v)
     }

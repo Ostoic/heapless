@@ -337,16 +337,19 @@ where
     K: Eq + Hash,
 {
     /// Gets a reference to the key that this entity corresponds to
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn key(&self) -> &K {
         &self.key
     }
 
     /// Removes this entry from the map and yields its corresponding key and value
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn remove_entry(self) -> (K, V) {
         self.core.remove_found(self.probe, self.pos)
     }
 
     /// Gets a reference to the value associated with this entry
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn get(&self) -> &V {
         // SAFETY: Already checked existence at instantiation and the only mutable reference
         // to the map is internally held.
@@ -354,6 +357,7 @@ where
     }
 
     /// Gets a mutable reference to the value associated with this entry
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn get_mut(&mut self) -> &mut V {
         // SAFETY: Already checked existence at instantiation and the only mutable reference
         // to the map is internally held.
@@ -361,6 +365,7 @@ where
     }
 
     /// Consumes this entry and yields a reference to the underlying value
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn into_mut(self) -> &'a mut V {
         // SAFETY: Already checked existence at instantiation and the only mutable reference
         // to the map is internally held.
@@ -368,6 +373,7 @@ where
     }
 
     /// Overwrites the underlying map's value with this entry's value
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn insert(self, value: V) -> V {
         // SAFETY: Already checked existence at instantiation and the only mutable reference
         // to the map is internally held.
@@ -380,6 +386,7 @@ where
     }
 
     /// Removes this entry from the map and yields its value
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn remove(self) -> V {
         self.remove_entry().1
     }
@@ -396,17 +403,20 @@ where
     K: Eq + Hash,
 {
     /// Get the key associated with this entry
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn key(&self) -> &K {
         &self.key
     }
 
     /// Consumes this entry to yield to key associated with it
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn into_key(self) -> K {
         self.key
     }
 
     /// Inserts this entry into to underlying map, yields a mutable reference to the inserted value.
     /// If the map is at capacity the value is returned instead.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn insert(self, value: V) -> Result<&'a mut V, V> {
         if self.core.entries.is_full() {
             Err(value)
@@ -498,6 +508,7 @@ where
 {
     /* Public API */
     /// Returns the number of elements the map can hold
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn capacity(&self) -> usize {
         N
     }
@@ -516,6 +527,7 @@ where
     ///     println!("{}", key);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn keys(&self) -> impl Iterator<Item = &K> {
         self.core.entries.iter().map(|bucket| &bucket.key)
     }
@@ -534,6 +546,7 @@ where
     ///     println!("{}", val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn values(&self) -> impl Iterator<Item = &V> {
         self.core.entries.iter().map(|bucket| &bucket.value)
     }
@@ -556,6 +569,7 @@ where
     ///     println!("{}", val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn values_mut(&mut self) -> impl Iterator<Item = &mut V> {
         self.core.entries.iter_mut().map(|bucket| &mut bucket.value)
     }
@@ -574,6 +588,7 @@ where
     ///     println!("key: {} val: {}", key, val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> Iter<'_, K, V> {
         Iter {
             iter: self.core.entries.iter(),
@@ -598,6 +613,7 @@ where
     ///     println!("key: {} val: {}", key, val);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter_mut(&mut self) -> IterMut<'_, K, V> {
         IterMut {
             iter: self.core.entries.iter_mut(),
@@ -607,6 +623,7 @@ where
     /// Get the first key-value pair
     ///
     /// Computes in **O(1)** time
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn first(&self) -> Option<(&K, &V)> {
         self.core
             .entries
@@ -617,6 +634,7 @@ where
     /// Get the first key-value pair, with mutable access to the value
     ///
     /// Computes in **O(1)** time
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn first_mut(&mut self) -> Option<(&K, &mut V)> {
         self.core
             .entries
@@ -627,6 +645,7 @@ where
     /// Get the last key-value pair
     ///
     /// Computes in **O(1)** time
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn last(&self) -> Option<(&K, &V)> {
         self.core
             .entries
@@ -637,6 +656,7 @@ where
     /// Get the last key-value pair, with mutable access to the value
     ///
     /// Computes in **O(1)** time
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn last_mut(&mut self) -> Option<(&K, &mut V)> {
         self.core
             .entries
@@ -659,6 +679,7 @@ where
     /// // Prints 2
     /// println!("val: {}", *map.get("a").unwrap());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn entry(&mut self, key: K) -> Entry<'_, K, V, N> {
         let hash_val = hash_with(&key, &self.build_hasher);
         if let Some((probe, pos)) = self.core.find(hash_val, &key) {
@@ -689,6 +710,7 @@ where
     /// a.insert(1, "a").unwrap();
     /// assert_eq!(a.len(), 1);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn len(&self) -> usize {
         self.core.entries.len()
     }
@@ -705,6 +727,7 @@ where
     /// a.insert(1, "a");
     /// assert!(!a.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -721,6 +744,7 @@ where
     /// a.clear();
     /// assert!(a.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         self.core.entries.clear();
         for pos in self.core.indices.iter_mut() {
@@ -743,6 +767,7 @@ where
     /// assert_eq!(map.get(&1), Some(&"a"));
     /// assert_eq!(map.get(&2), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn get<Q>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -769,6 +794,7 @@ where
     /// assert_eq!(map.contains_key(&1), true);
     /// assert_eq!(map.contains_key(&2), false);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn contains_key<Q>(&self, key: &Q) -> bool
     where
         K: Borrow<Q>,
@@ -796,6 +822,7 @@ where
     /// }
     /// assert_eq!(map[&1], "b");
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn get_mut<'v, Q>(&'v mut self, key: &Q) -> Option<&'v mut V>
     where
         K: Borrow<Q>,
@@ -835,6 +862,7 @@ where
     /// assert_eq!(map.insert(37, "c"), Ok(Some("b")));
     /// assert_eq!(map[&37], "c");
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn insert(&mut self, key: K, value: V) -> Result<Option<V>, (K, V)> {
         let hash = hash_with(&key, &self.build_hasher);
         match self.core.insert(hash, key, value) {
@@ -857,6 +885,7 @@ where
     /// assert_eq!(map.remove(&1), Some("a"));
     /// assert_eq!(map.remove(&1), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn remove<Q>(&mut self, key: &Q) -> Option<V>
     where
         K: Borrow<Q>,
@@ -873,6 +902,7 @@ where
     /// Return `None` if `key` is not in map.
     ///
     /// Computes in **O(1)** time (average).
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn swap_remove<Q>(&mut self, key: &Q) -> Option<V>
     where
         K: Borrow<Q>,
@@ -884,6 +914,7 @@ where
 
     /* Private API */
     /// Return probe (indices) and position (entries)
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     fn find<Q>(&self, key: &Q) -> Option<(usize, usize)>
     where
         K: Borrow<Q>,

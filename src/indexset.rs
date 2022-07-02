@@ -80,6 +80,7 @@ pub struct IndexSet<T, S, const N: usize> {
 
 impl<T, S, const N: usize> IndexSet<T, BuildHasherDefault<S>, N> {
     /// Creates an empty `IndexSet`
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub const fn new() -> Self {
         IndexSet {
             map: IndexMap::new(),
@@ -102,6 +103,7 @@ where
     /// let set = FnvIndexSet::<i32, 16>::new();
     /// assert_eq!(set.capacity(), 16);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn capacity(&self) -> usize {
         self.map.capacity()
     }
@@ -122,6 +124,7 @@ where
     ///     println!("{}", x);
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter {
             iter: self.map.iter(),
@@ -131,6 +134,7 @@ where
     /// Get the first value
     ///
     /// Computes in **O(1)** time
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn first(&self) -> Option<&T> {
         self.map.first().map(|(k, _v)| k)
     }
@@ -138,6 +142,7 @@ where
     /// Get the last value
     ///
     /// Computes in **O(1)** time
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn last(&self) -> Option<&T> {
         self.map.last().map(|(k, _v)| k)
     }
@@ -166,6 +171,7 @@ where
     /// let diff: FnvIndexSet<_, 16> = b.difference(&a).collect();
     /// assert_eq!(diff, [4].iter().collect::<FnvIndexSet<_, 16>>());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn difference<'a, S2, const N2: usize>(
         &'a self,
         other: &'a IndexSet<T, S2, N2>,
@@ -201,6 +207,7 @@ where
     /// assert_eq!(diff1, diff2);
     /// assert_eq!(diff1, [1, 4].iter().collect::<FnvIndexSet<_, 16>>());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn symmetric_difference<'a, S2, const N2: usize>(
         &'a self,
         other: &'a IndexSet<T, S2, N2>,
@@ -230,6 +237,7 @@ where
     /// let intersection: FnvIndexSet<_, 16> = a.intersection(&b).collect();
     /// assert_eq!(intersection, [2, 3].iter().collect::<FnvIndexSet<_, 16>>());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn intersection<'a, S2, const N2: usize>(
         &'a self,
         other: &'a IndexSet<T, S2, N2>,
@@ -262,6 +270,7 @@ where
     /// let union: FnvIndexSet<_, 16> = a.union(&b).collect();
     /// assert_eq!(union, [1, 2, 3, 4].iter().collect::<FnvIndexSet<_, 16>>());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn union<'a, S2, const N2: usize>(
         &'a self,
         other: &'a IndexSet<T, S2, N2>,
@@ -284,6 +293,7 @@ where
     /// v.insert(1).unwrap();
     /// assert_eq!(v.len(), 1);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn len(&self) -> usize {
         self.map.len()
     }
@@ -300,6 +310,7 @@ where
     /// v.insert(1).unwrap();
     /// assert!(!v.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_empty(&self) -> bool {
         self.map.is_empty()
     }
@@ -316,6 +327,7 @@ where
     /// v.clear();
     /// assert!(v.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         self.map.clear()
     }
@@ -334,6 +346,7 @@ where
     /// assert_eq!(set.contains(&1), true);
     /// assert_eq!(set.contains(&4), false);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn contains<Q>(&self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -359,6 +372,7 @@ where
     /// b.insert(1).unwrap();
     /// assert_eq!(a.is_disjoint(&b), false);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_disjoint<S2, const N2: usize>(&self, other: &IndexSet<T, S2, N2>) -> bool
     where
         S2: BuildHasher,
@@ -383,6 +397,7 @@ where
     /// set.insert(4).unwrap();
     /// assert_eq!(set.is_subset(&sup), false);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_subset<S2, const N2: usize>(&self, other: &IndexSet<T, S2, N2>) -> bool
     where
         S2: BuildHasher,
@@ -410,6 +425,7 @@ where
     /// set.insert(2).unwrap();
     /// assert_eq!(set.is_superset(&sub), true);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_superset<S2, const N2: usize>(&self, other: &IndexSet<T, S2, N2>) -> bool
     where
         S2: BuildHasher,
@@ -434,6 +450,7 @@ where
     /// assert_eq!(set.insert(2).unwrap(), false);
     /// assert_eq!(set.len(), 1);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn insert(&mut self, value: T) -> Result<bool, T> {
         self.map
             .insert(value, ())
@@ -457,6 +474,7 @@ where
     /// assert_eq!(set.remove(&2), true);
     /// assert_eq!(set.remove(&2), false);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn remove<Q>(&mut self, value: &Q) -> bool
     where
         T: Borrow<Q>,

@@ -300,6 +300,7 @@ impl<T> Pool<T> {
     /// Returns `None` when the pool is observed as exhausted
     ///
     /// *NOTE:* This method does *not* have bounded execution time because it contains a CAS loop
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn alloc(&self) -> Option<Box<T, Uninit>> {
         if mem::size_of::<T>() == 0 {
             // NOTE because we return a dangling pointer to a NODE, which has non-zero size
@@ -328,6 +329,7 @@ impl<T> Pool<T> {
     /// *NOTE*: `T`'s destructor (if any) will run on `value` iff `S = Init`
     ///
     /// *NOTE:* This method does *not* have bounded execution time because it contains a CAS loop
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn free<S>(&self, value: Box<T, S>)
     where
         S: 'static,
@@ -357,6 +359,7 @@ impl<T> Pool<T> {
     /// This method might *not* fully utilize the given memory block due to alignment requirements.
     ///
     /// This method returns the number of *new* blocks that can be allocated.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn grow(&self, memory: &'static mut [u8]) -> usize {
         if mem::size_of::<T>() == 0 {
             // ZST use no memory so a pool of ZST always has maximum capacity
@@ -410,6 +413,7 @@ impl<T> Pool<T> {
     ///
     /// Unlike [`Pool.grow`](struct.Pool.html#method.grow) this method fully utilizes the given
     /// memory block
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn grow_exact<A>(&self, memory: &'static mut MaybeUninit<A>) -> usize
     where
         A: AsMut<[Node<T>]>,
@@ -445,6 +449,7 @@ pub struct Box<T, STATE = Init> {
 
 impl<T> Box<T, Uninit> {
     /// Initializes this memory block
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn init(self, val: T) -> Box<T, Init> {
         if mem::size_of::<T>() == 0 {
             // no memory operation needed for ZST

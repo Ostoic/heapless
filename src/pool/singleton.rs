@@ -105,6 +105,7 @@ where
     P: Pool,
 {
     /// Initializes this memory block
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn init(self, val: P::Data) -> Box<P, Init> {
         let node = self.inner.node;
 
@@ -142,6 +143,7 @@ where
     /// (DO NOT USE, SEE DEPRECATION) Freezes the contents of this memory block
     ///
     /// See [rust-lang/rust#58363](https://github.com/rust-lang/rust/pull/58363) for details.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn freeze(self) -> Box<P, Init> {
         let node = self.inner.node;
 
@@ -170,6 +172,7 @@ where
     ///
     /// Note that this this does not return the memory block to the pool. The
     /// block can be reused, or returned to the pool by dropping it.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn forget(self) -> Box<P, Uninit> {
         let node = self.inner.node;
 

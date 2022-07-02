@@ -61,6 +61,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// static mut X: Vec<u8, 16> = Vec::new();
     /// ```
     /// `Vec` `const` constructor; wrap the returned value in [`Vec`](../struct.Vec.html)
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub const fn new() -> Self {
         // Const assert N >= 0
         crate::sealed::greater_than_eq_0::<N>();
@@ -93,6 +94,7 @@ impl<T, const N: usize> Vec<T, N> {
     }
 
     /// Clones a vec into a new vec
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub(crate) fn clone(&self) -> Self
     where
         T: Clone,
@@ -108,11 +110,13 @@ impl<T, const N: usize> Vec<T, N> {
     }
 
     /// Returns a raw pointer to the vector’s buffer.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn as_ptr(&self) -> *const T {
         self.buffer.as_ptr() as *const T
     }
 
     /// Returns a raw pointer to the vector’s buffer, which may be mutated through.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn as_mut_ptr(&mut self) -> *mut T {
         self.buffer.as_mut_ptr() as *mut T
     }
@@ -128,6 +132,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// let buffer: Vec<u8, 5> = Vec::from_slice(&[1, 2, 3, 5, 8]).unwrap();
     /// assert_eq!(buffer.as_slice(), &[1, 2, 3, 5, 8]);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn as_slice(&self) -> &[T] {
         // NOTE(unsafe) avoid bound checks in the slicing operation
         // &buffer[..self.len]
@@ -145,6 +150,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// let array: [u8; 5] = buffer.into_array().unwrap();
     /// assert_eq!(array, [1, 2, 3, 5, 8]);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn into_array<const M: usize>(self) -> Result<[T; M], Self> {
         if self.len() == M {
             // This is how the unstable `MaybeUninit::array_assume_init` method does it
@@ -172,6 +178,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// buffer[0] = 9;
     /// assert_eq!(buffer.as_slice(), &[9, 2, 3, 5, 8]);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub(crate) fn as_mut_slice(&mut self) -> &mut [T] {
         // NOTE(unsafe) avoid bound checks in the slicing operation
         // &mut buffer[..self.len]
@@ -184,6 +191,7 @@ impl<T, const N: usize> Vec<T, N> {
     }
 
     /// Clears the vector, removing all values.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         self.truncate(0);
     }
@@ -193,6 +201,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// # Panic
     ///
     /// Panics if the vec cannot hold all elements of the iterator.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn extend<I>(&mut self, iter: I)
     where
         I: IntoIterator<Item = T>,
@@ -217,6 +226,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// vec.extend_from_slice(&[2, 3, 4]).unwrap();
     /// assert_eq!(*vec, [1, 2, 3, 4]);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn extend_from_slice(&mut self, other: &[T]) -> Result<(), ()>
     where
         T: Clone,
@@ -235,6 +245,7 @@ impl<T, const N: usize> Vec<T, N> {
     }
 
     /// Removes the last element from a vector and returns it, or `None` if it's empty
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop(&mut self) -> Option<T> {
         if self.len != 0 {
             Some(unsafe { self.pop_unchecked() })
@@ -246,6 +257,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// Appends an `item` to the back of the collection
     ///
     /// Returns back the `item` if the vector is full
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push(&mut self, item: T) -> Result<(), T> {
         if self.len < self.capacity() {
             unsafe { self.push_unchecked(item) }
@@ -283,6 +295,7 @@ impl<T, const N: usize> Vec<T, N> {
     }
 
     /// Shortens the vector, keeping the first `len` elements and dropping the rest.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn truncate(&mut self, len: usize) {
         // This is safe because:
         //
@@ -312,6 +325,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// new_len is less than len, the Vec is simply truncated.
     ///
     /// See also [`resize_default`](struct.Vec.html#method.resize_default).
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn resize(&mut self, new_len: usize, value: T) -> Result<(), ()>
     where
         T: Clone,
@@ -338,6 +352,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// If `new_len` is less than `len`, the `Vec` is simply truncated.
     ///
     /// See also [`resize`](struct.Vec.html#method.resize).
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn resize_default(&mut self, new_len: usize) -> Result<(), ()>
     where
         T: Clone + Default,
@@ -468,6 +483,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// assert_eq!(v.swap_remove(0), "foo");
     /// assert_eq!(&*v, ["baz", "qux"]);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn swap_remove(&mut self, index: usize) -> T {
         assert!(index < self.len);
         unsafe { self.swap_remove_unchecked(index) }
@@ -500,6 +516,7 @@ impl<T, const N: usize> Vec<T, N> {
     /// assert_eq!(unsafe { v.swap_remove_unchecked(0) }, "foo");
     /// assert_eq!(&*v, ["baz", "qux"]);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub unsafe fn swap_remove_unchecked(&mut self, index: usize) -> T {
         let length = self.len();
         debug_assert!(index < length);

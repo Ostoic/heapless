@@ -114,6 +114,7 @@ impl<T, const N: usize> Queue<T, N> {
     }
 
     /// Creates an empty queue with a fixed capacity of `N - 1`
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub const fn new() -> Self {
         // Const assert N > 1
         crate::sealed::greater_than_1::<N>();
@@ -153,6 +154,7 @@ impl<T, const N: usize> Queue<T, N> {
     }
 
     /// Iterates from the front of the queue to the back
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> Iter<'_, T, N> {
         Iter {
             rb: self,
@@ -162,6 +164,7 @@ impl<T, const N: usize> Queue<T, N> {
     }
 
     /// Returns an iterator that allows modifying each value
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter_mut(&mut self) -> IterMut<'_, T, N> {
         let len = self.len();
         IterMut {
@@ -200,6 +203,7 @@ impl<T, const N: usize> Queue<T, N> {
     /// assert_eq!(Some(1), consumer.dequeue());
     /// assert_eq!(None, consumer.peek());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn peek(&self) -> Option<&T> {
         if !self.is_empty() {
             let head = self.head.load(Ordering::Relaxed);
@@ -212,6 +216,7 @@ impl<T, const N: usize> Queue<T, N> {
     // The memory for enqueueing is "owned" by the tail pointer.
     // NOTE: This internal function uses internal mutability to allow the [`Producer`] to enqueue
     // items without doing pointer arithmetic and accessing internal fields of this type.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     unsafe fn inner_enqueue(&self, val: T) -> Result<(), T> {
         let current_tail = self.tail.load(Ordering::Relaxed);
         let next_tail = Self::increment(current_tail);
@@ -229,6 +234,7 @@ impl<T, const N: usize> Queue<T, N> {
     // The memory for enqueueing is "owned" by the tail pointer.
     // NOTE: This internal function uses internal mutability to allow the [`Producer`] to enqueue
     // items without doing pointer arithmetic and accessing internal fields of this type.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     unsafe fn inner_enqueue_unchecked(&self, val: T) {
         let current_tail = self.tail.load(Ordering::Relaxed);
 
@@ -252,6 +258,7 @@ impl<T, const N: usize> Queue<T, N> {
     // The memory for dequeuing is "owned" by the head pointer,.
     // NOTE: This internal function uses internal mutability to allow the [`Consumer`] to dequeue
     // items without doing pointer arithmetic and accessing internal fields of this type.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     unsafe fn inner_dequeue(&self) -> Option<T> {
         let current_head = self.head.load(Ordering::Relaxed);
 
@@ -270,6 +277,7 @@ impl<T, const N: usize> Queue<T, N> {
     // The memory for dequeuing is "owned" by the head pointer,.
     // NOTE: This internal function uses internal mutability to allow the [`Consumer`] to dequeue
     // items without doing pointer arithmetic and accessing internal fields of this type.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     unsafe fn inner_dequeue_unchecked(&self) -> T {
         let current_head = self.head.load(Ordering::Relaxed);
         let v = (self.buffer.get_unchecked(current_head).get() as *const T).read();
@@ -291,6 +299,7 @@ impl<T, const N: usize> Queue<T, N> {
     }
 
     /// Splits a queue into producer and consumer endpoints
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn split(&mut self) -> (Producer<'_, T, N>, Consumer<'_, T, N>) {
         (Producer { rb: self }, Consumer { rb: self })
     }

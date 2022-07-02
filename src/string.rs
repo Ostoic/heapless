@@ -114,6 +114,7 @@ impl<const N: usize> String<N> {
     /// }
     /// assert_eq!(s, "olleh");
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub unsafe fn as_mut_vec(&mut self) -> &mut Vec<u8, N> {
         &mut self.vec
     }
@@ -244,6 +245,7 @@ impl<const N: usize> String<N> {
     ///
     /// assert_eq!(s.pop(), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop(&mut self) -> Option<char> {
         let ch = self.chars().rev().next()?;
 

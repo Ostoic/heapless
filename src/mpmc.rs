@@ -164,6 +164,7 @@ impl<T, const N: usize> MpMcQueue<T, N> {
     }
 
     /// Returns the item in the front of the queue, or `None` if the queue is empty
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn dequeue(&self) -> Option<T> {
         unsafe { dequeue(self.buffer.get() as *mut _, &self.dequeue_pos, Self::MASK) }
     }
@@ -171,6 +172,7 @@ impl<T, const N: usize> MpMcQueue<T, N> {
     /// Adds an `item` to the end of the queue
     ///
     /// Returns back the `item` if the queue is full
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn enqueue(&self, item: T) -> Result<(), T> {
         unsafe {
             enqueue(

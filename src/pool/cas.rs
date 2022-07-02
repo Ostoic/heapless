@@ -35,6 +35,7 @@ impl<T> Stack<T> {
         }
     }
 
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push(&self, new_head: Ptr<Node<T>>) {
         let mut head = self.head.load(Ordering::Relaxed);
 
@@ -60,6 +61,7 @@ impl<T> Stack<T> {
         }
     }
 
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn try_pop(&self) -> Option<Ptr<Node<T>>> {
         loop {
             if let Some(mut head) = self.head.load(Ordering::Acquire) {
@@ -193,6 +195,7 @@ impl<T> Ptr<T> {
         unsafe { NonNull::new_unchecked(self.offset() as *mut T) }
     }
 
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn dangling() -> Self {
         // `anchor()` returns a well-aligned pointer so an offset of 0 will also produce a well-aligned pointer
         unsafe { Self::from_parts(initial_tag_value(), 0) }

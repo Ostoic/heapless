@@ -26,6 +26,7 @@ __trybuild = []
 mpmc_large = []
 # This flag has no version guarantee, the `defmt` dependency can be updated in a patch release
 defmt-impl = ["defmt"]
+aggressive-inline = []
 
 [target.thumbv6m-none-eabi.dependencies]
 atomic-polyfill = { version = "0.1.2", optional = true }

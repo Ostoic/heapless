@@ -117,6 +117,7 @@ impl<T, K, const N: usize> BinaryHeap<T, K, N> {
     /// // allocate the binary heap in a static variable
     /// static mut HEAP: BinaryHeap<i32, Max, 8> = BinaryHeap::new();
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub const fn new() -> Self {
         Self {
             _kind: PhantomData,
@@ -132,6 +133,7 @@ where
 {
     /* Public API */
     /// Returns the capacity of the binary heap.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn capacity(&self) -> usize {
         self.data.capacity()
     }
@@ -151,6 +153,7 @@ where
     ///
     /// assert!(heap.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn clear(&mut self) {
         self.data.clear()
     }
@@ -166,6 +169,7 @@ where
     ///
     /// assert_eq!(heap.len(), 2);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn len(&self) -> usize {
         self.data.len()
     }
@@ -185,6 +189,7 @@ where
     ///
     /// assert!(!heap.is_empty());
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -206,6 +211,7 @@ where
     ///
     /// }
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter(&self) -> slice::Iter<'_, T> {
         self.data.as_slice().iter()
     }
@@ -214,6 +220,7 @@ where
     ///
     /// **WARNING** Mutating the items in the binary heap can leave the heap in an inconsistent
     /// state.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn iter_mut(&mut self) -> slice::IterMut<'_, T> {
         self.data.as_mut_slice().iter_mut()
     }
@@ -232,6 +239,7 @@ where
     /// heap.push(2).unwrap();
     /// assert_eq!(heap.peek(), Some(&5));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn peek(&self) -> Option<&T> {
         self.data.as_slice().get(0)
     }
@@ -262,6 +270,7 @@ where
     ///
     /// assert_eq!(heap.peek(), Some(&2));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn peek_mut(&mut self) -> Option<PeekMut<'_, T, K, N>> {
         if self.is_empty() {
             None
@@ -287,6 +296,7 @@ where
     /// assert_eq!(heap.pop(), Some(1));
     /// assert_eq!(heap.pop(), None);
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop(&mut self) -> Option<T> {
         if self.is_empty() {
             None
@@ -320,6 +330,7 @@ where
     /// assert_eq!(heap.len(), 3);
     /// assert_eq!(heap.peek(), Some(&5));
     /// ```
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn push(&mut self, item: T) -> Result<(), T> {
         if self.data.is_full() {
             return Err(item);
@@ -337,6 +348,7 @@ where
     }
 
     /// Returns the underlying ```Vec<T,N>```. Order is arbitrary and time is O(1).
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn into_vec(self) -> Vec<T, N> {
         self.data
     }
@@ -501,6 +513,7 @@ where
     K: Kind,
 {
     /// Removes the peeked value from the heap and returns it.
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
     pub fn pop(mut this: PeekMut<'a, T, K, N>) -> T {
         let value = this.heap.pop().unwrap();
         this.sift = false;
